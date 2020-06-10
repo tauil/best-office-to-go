@@ -3,6 +3,10 @@ import { AxiosResponse } from "axios";
 
 import { getCityFiveDaysForecast } from "../services/weather-api";
 
+export const AMSTERDAM = 249758;
+export const MADRID = 308526;
+export const BUDAPEST = 187423;
+
 // The response could be specific for each endpoint
 type ApiRequest = (...args: any) => Promise<AxiosResponse<any>>;
 
