@@ -8,11 +8,15 @@ import './App.css';
 function App() {
   const [requestWeatherForecast, { data, loading, error }] = useRequestWeatherApi();
 
-  useEffect(function loadAmsterdamForecast() {
-    if (!data && !loading && !error) {
-      requestWeatherForecast(249758);
-    }
-  }, [data, loading, error]);
+  useEffect(
+    function loadAmsterdamForecast() {
+      if (!data && !loading && !error) {
+        requestWeatherForecast(249758);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [data, loading, error]
+  );
 
   console.log(data);
 
