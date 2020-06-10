@@ -1,8 +1,21 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+
+import { useRequestWeatherApi } from "./hooks/useRequestApi";
+
 import logo from './logo.svg';
 import './App.css';
 
 function App() {
+  const [requestWeatherForecast, { data, loading, error }] = useRequestWeatherApi();
+
+  useEffect(function loadAmsterdamForecast() {
+    if (!data && !loading && !error) {
+      requestWeatherForecast(249758);
+    }
+  }, [data, loading, error]);
+
+  console.log(data);
+
   return (
     <div className="App">
       <header className="App-header">
