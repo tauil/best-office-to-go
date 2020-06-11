@@ -8,7 +8,7 @@ const DEFAULT_PARAMS = {
   }
 };
 
-const weatherApiClient = axios.create({
+const apiClient = axios.create({
   baseURL: API_URL,
   headers: {
     // eslint-disable-next-line @typescript-eslint/naming-convention
@@ -19,4 +19,4 @@ const weatherApiClient = axios.create({
 });
 
 export const getCityFiveDaysForecast = (cityId: number) =>
-  weatherApiClient.get<any>(`/forecasts/v1/daily/5day/${cityId}`, DEFAULT_PARAMS);
+  apiClient.get<any>(`/forecasts/v1/daily/5day/${cityId}`, DEFAULT_PARAMS);

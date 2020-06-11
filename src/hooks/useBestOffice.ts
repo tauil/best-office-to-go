@@ -1,6 +1,7 @@
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback } from "react";
 
-import { useRequestOfficeWeather } from "./useRequestApi";
+import useRequestOfficeWeather from "./useRequestOfficeWeather";
+import useRequestOfficeFlights from "./useRequestOfficeFlights";
 
 // TODO: Define type properly
 type OfficeResult = any;
@@ -52,14 +53,8 @@ const initialState: BestOfficeState = {
 function useBestOffice(): BestOfficeReturn {
   const [ { result, loading, error }, setResult ] = useState(initialState);
 
-  const [requestForecast, { data: forecast, loading: loadingForecast, error: errorForecast }] = useRequestOfficeWeather();
-
-  useEffect(
-    function requestLatLong() {
-      navigator.geolocation.getCurrentPosition(function(a){console.log(a)})
-    },
-    []
-  );
+  const [ requestForecast, { data: forecast, loading: loadingForecast, error: errorForecast } ] = useRequestOfficeWeather();
+  const [ requestFlights, { data: flights, loading: loadingFlights, error: errorFlights } ] = useRequestOfficeFlights();
 
   const forecastRequestCallback = useCallback(
     function loadForecast() {
@@ -71,7 +66,17 @@ function useBestOffice(): BestOfficeReturn {
     [forecast, loadingForecast, errorForecast]
   );
 
-  console.log({forecast});
+  const flightsRequestCallback = useCallback(
+    function loadFlights() {
+      if (!flights && !loadingFlights && !errorForecast) {
+        requestFlights();
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [flights, loadingFlights, errorFlights]
+  );
+
+  console.log({forecast, flights, loading: (loading || loadingFlights || loadingForecast)});
 
   function request() {
     try {
@@ -87,6 +92,7 @@ function useBestOffice(): BestOfficeReturn {
       // 5. If 1 day with  more than 1 city with good weather, compare flight prices and show the best
       console.log("Started");
       forecastRequestCallback();
+      flightsRequestCallback();
 
       setResult((prevState) => ({
         ...prevState,
@@ -102,7 +108,7 @@ function useBestOffice(): BestOfficeReturn {
     }
   }
 
-  return [request, { result, loading, error }];
+  return [request, { result, loading: (loading || loadingFlights || loadingForecast), error }];
 }
 
 export default useBestOffice;

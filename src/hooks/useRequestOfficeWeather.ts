@@ -27,7 +27,7 @@ const initialState: ApiRequestHookState = {
 };
 
 // Possible improvement: This could get an array of desirable cities to gether the weather
-export function useRequestOfficeWeather(): ApiRequestHookReturn {
+function useRequestOfficeWeather(): ApiRequestHookReturn {
   const [{ data, loading, error }, setReturn] = useState(initialState);
 
   async function request() {
@@ -61,3 +61,5 @@ export function useRequestOfficeWeather(): ApiRequestHookReturn {
 
   return [request, { data, loading, error }];
 }
+
+export default useRequestOfficeWeather;

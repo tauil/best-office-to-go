@@ -13,6 +13,7 @@ function App() {
         request();
       }
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [ result, loading, error ]
   );
 
