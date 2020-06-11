@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import { AMSTERDAM, MADRID, BUDAPEST, useRequestWeatherApi } from "./useRequestApi";
+import { useRequestOfficeWeather } from "./useRequestApi";
 
 interface BestOfficeState {
   result: any | null, // TODO
@@ -49,9 +49,7 @@ const initialState: BestOfficeState = {
 function useBestOffice(): BestOfficeReturn {
   const [ { result, loading, error }, setResult ] = useState(initialState);
 
-  const [requestAmsterdamForecast, { data: amsForecast, loading: amsForecastLoading, error: amsForecastError }] = useRequestWeatherApi();
-  const [requestMadridForecast, { data: madForecast, loading: madForecastLoading, error: madForecastError }] = useRequestWeatherApi();
-  const [requestBudapestForecast, { data: budForecast, loading: budForecastLoading, error: budForecastError }] = useRequestWeatherApi();
+  const [requestForecast, { data: forecast, loading: loadingForecast, error: errorForecast }] = useRequestOfficeWeather([]);
 
   useEffect(
     function requestLatLong() {
@@ -61,38 +59,16 @@ function useBestOffice(): BestOfficeReturn {
   );
 
   useEffect(
-    function loadAmsterdamForecast() {
-      if (!amsForecast && !amsForecastLoading && !amsForecastError) {
-        requestAmsterdamForecast(AMSTERDAM);
+    function loadForecast() {
+      if (!forecast && !loadingForecast && !errorForecast) {
+        requestForecast();
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [amsForecast, amsForecastLoading, amsForecastError]
+    [forecast, loadingForecast, errorForecast]
   );
 
-  useEffect(
-    function loadMadridForecast() {
-      if (!madForecast && !madForecastLoading && !madForecastError) {
-        requestMadridForecast(MADRID);
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [madForecast, madForecastLoading, madForecastError]
-  );
-
-  useEffect(
-    function loadBudapestForecast() {
-      if (!budForecast && !budForecastLoading && !budForecastError) {
-        requestBudapestForecast(BUDAPEST);
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [budForecast, budForecastLoading, budForecastError]
-  );
-
-  console.log(amsForecast);
-  console.log(madForecast);
-  console.log(budForecast);
+  console.log(forecast);
 
   function request() {
     try {

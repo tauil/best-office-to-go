@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { AxiosResponse } from "axios";
 
 import { getCityFiveDaysForecast } from "../services/weather-api";
 
@@ -7,8 +6,8 @@ export const AMSTERDAM = 249758;
 export const MADRID = 308526;
 export const BUDAPEST = 187423;
 
-// The response could be specific for each endpoint
-type ApiRequest = (...args: any) => Promise<AxiosResponse<any>>;
+// The Promise and AxiosResponse content should be specific the endpoint. Skipping just to sabe time for now
+type ApiRequest = () => Promise<any>;
 
 interface ApiRequestHookState {
   loading: boolean;
@@ -17,7 +16,7 @@ interface ApiRequestHookState {
 }
 
 type ApiRequestHookReturn = [
-  (cityId: number) => void,
+  ApiRequest,
   ApiRequestHookState,
 ];
 
@@ -27,19 +26,29 @@ const initialState: ApiRequestHookState = {
   data: null,
 };
 
-function useRequestApi(apiRequest: ApiRequest): ApiRequestHookReturn {
+type OfficesIds = number[];
+
+export function useRequestOfficeWeather(offices: OfficesIds): ApiRequestHookReturn {
   const [{ data, loading, error }, setReturn] = useState(initialState);
 
-  async function request(...args: any) {
+  async function request() {
     try {
       setReturn((prevState) => ({
         ...prevState,
         loading: true,
       }));
-      const response: any | null = await apiRequest(...args);
+
+      const responseAms: any | null = await getCityFiveDaysForecast(AMSTERDAM);
+      const responseMad: any | null = await getCityFiveDaysForecast(MADRID);
+      const responseBud: any | null = await getCityFiveDaysForecast(BUDAPEST);
+
       setReturn((prevState) => ({
         ...prevState,
-        data: response.data,
+        data: {
+          amsterdam: responseAms.data,
+          madrid: responseMad.data,
+          budapest: responseBud.data,
+        },
         loading: false,
       }));
     } catch (error) {
@@ -52,8 +61,4 @@ function useRequestApi(apiRequest: ApiRequest): ApiRequestHookReturn {
   }
 
   return [request, { data, loading, error }];
-}
-
-export function useRequestWeatherApi() {
-  return useRequestApi(getCityFiveDaysForecast);
 }

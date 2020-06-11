@@ -25,7 +25,7 @@ function App() {
   return (
     <div className="App">
       {result.map((office: any) => (
-        <div className={office.bestOffice && 'best-office'}>
+        <div key={office.location} className={office.bestOffice ? 'best-office' : undefined}>
           <h2>{office.location}</h2>
           <p>{office.weather.temperature.min} / {office.weather.temperature.max}</p>
           <p>{office.weather.conditions}</p>
