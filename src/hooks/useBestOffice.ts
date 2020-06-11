@@ -1,9 +1,12 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 
 import { useRequestOfficeWeather } from "./useRequestApi";
 
+// TODO: Define type properly
+type OfficeResult = any;
+
 interface BestOfficeState {
-  result: any | null, // TODO
+  result: OfficeResult[] | null,
   loading: boolean,
   error: Error | null,
 }
@@ -49,7 +52,7 @@ const initialState: BestOfficeState = {
 function useBestOffice(): BestOfficeReturn {
   const [ { result, loading, error }, setResult ] = useState(initialState);
 
-  const [requestForecast, { data: forecast, loading: loadingForecast, error: errorForecast }] = useRequestOfficeWeather([]);
+  const [requestForecast, { data: forecast, loading: loadingForecast, error: errorForecast }] = useRequestOfficeWeather();
 
   useEffect(
     function requestLatLong() {
@@ -58,7 +61,7 @@ function useBestOffice(): BestOfficeReturn {
     []
   );
 
-  useEffect(
+  const forecastRequestCallback = useCallback(
     function loadForecast() {
       if (!forecast && !loadingForecast && !errorForecast) {
         requestForecast();
@@ -68,7 +71,7 @@ function useBestOffice(): BestOfficeReturn {
     [forecast, loadingForecast, errorForecast]
   );
 
-  console.log(forecast);
+  console.log({forecast});
 
   function request() {
     try {
@@ -77,13 +80,13 @@ function useBestOffice(): BestOfficeReturn {
         loading: true,
       }));
 
-      //const response: any | null = await apiRequest(...args);
-      // 1. Get weather from 3 cities
+      // 1. (DONE) Get weather from 3 cities
       // 2. Get lat long
       // 3. Get local airport
       // 4. Get flights for good days
       // 5. If 1 day with  more than 1 city with good weather, compare flight prices and show the best
       console.log("Started");
+      forecastRequestCallback();
 
       setResult((prevState) => ({
         ...prevState,

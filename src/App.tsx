@@ -13,7 +13,7 @@ function App() {
         request();
       }
     },
-    [ result, loading, error]
+    [ result, loading, error ]
   );
 
   if (!result || loading) {
