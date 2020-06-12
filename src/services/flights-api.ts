@@ -13,7 +13,7 @@ const apiClient = axios.create({
 });
 
 // Default to Amsterdam lat / long
-export const getLocalAirport = (lat: number = 52.3730944, long: number = 4.9053696) =>
+export const getLocalAirport = (lat: number, long: number) =>
   apiClient.get<any>(`/locations`, {
     params: {
       radius: 50,

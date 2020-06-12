@@ -33,26 +33,26 @@ const initialState: ApiRequestHookState = {
 function useRequestOfficeFlights(): ApiRequestHookReturn {
   const [{ data, loading, error, lat, long }, setReturn] = useState(initialState);
 
-  const requestLatLongCallback = useCallback(
-    async function requestLatLong() {
-      setReturn((prevState) => ({
-        ...prevState,
-        loading: true,
-      }));
-
+  async function requestLatLong(): Promise<{ latitude: number, longitude: number }> {
+    return new Promise(resolve => {
       navigator.geolocation.getCurrentPosition(function({ coords }: any){
         const { latitude, longitude } = coords;
-        console.log({latitude});
-        setReturn((prevState) => ({
-          ...prevState,
-          loading: false,
-          lat: latitude,
-          long: longitude,
-        }));
+        resolve({ latitude, longitude });
       })
-    },
-    []
-  );
+    });
+  }
+
+  async function requestFlights(lat: number, long: number) {
+    const currentLocationAirports: any | null = await getLocalAirport(lat, long);
+
+    // TODO: Manage error
+    const { data: { locations } } = currentLocationAirports;
+    const currentLocationAirport = locations[0];
+
+    const flightsToMad: any | null = await getFlightsFrom(currentLocationAirport.code, "MAD", "18/11/2020", "12/12/2020");
+
+    return flightsToMad.data;
+  }
 
   async function request() {
     try {
@@ -61,22 +61,12 @@ function useRequestOfficeFlights(): ApiRequestHookReturn {
         loading: true,
       }));
 
-      console.log("Requesting flights...");
-      // TODO: Pass lat / long
-      await requestLatLongCallback();
-      const currentLocationAirports: any | null = await getLocalAirport();
-      console.log({a: currentLocationAirports});
-      const { data: { locations } } = currentLocationAirports;
-      // TODO: Investigate why lat, long is not loading here
-      console.log({lat, long, locations});
-      const currentLocationAirport = locations[0];
-      const flightsToMad: any | null = await getFlightsFrom(currentLocationAirport.code, "MAD", "18/11/2020", "12/12/2020");
-      const { data } = flightsToMad;
-      console.log({loadedFlights: data});
+      const coords = await requestLatLong();
+      const flights = await requestFlights(coords.latitude, coords.longitude);
 
       setReturn((prevState) => ({
         ...prevState,
-        data: data.data, // Unfortune coincidence...
+        data: flights,
         loading: false,
       }));
     } catch (error) {

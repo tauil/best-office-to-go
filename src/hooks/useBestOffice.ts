@@ -76,7 +76,7 @@ function useBestOffice(): BestOfficeReturn {
     [flights, loadingFlights, errorFlights]
   );
 
-  console.log({forecast, flights, loading: (loading || loadingFlights || loadingForecast)});
+  console.log({ forecast, flights });
 
   function request() {
     try {
@@ -86,8 +86,8 @@ function useBestOffice(): BestOfficeReturn {
       }));
 
       // 1. (DONE) Get weather from 3 cities
-      // 2. Get lat long
-      // 3. Get local airport
+      // 2. (DONE) Get lat long
+      // 3. (DONE) Get local airport
       // 4. Get flights for good days
       // 5. If 1 day with  more than 1 city with good weather, compare flight prices and show the best
       console.log("Started");
