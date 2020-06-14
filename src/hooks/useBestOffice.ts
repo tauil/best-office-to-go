@@ -53,7 +53,7 @@ function useBestOffice(): HookReturn {
   }
 
   async function loadFlights(max_stops: number) {
-    if (!loadingFlights && !errorForecast) {
+    if (!loadingFlights && !errorFlights) {
       await requestFlights(max_stops);
     }
   }
