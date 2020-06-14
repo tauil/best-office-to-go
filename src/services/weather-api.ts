@@ -13,8 +13,6 @@ const apiClient = axios.create({
   headers: {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     "Content-type": "application/json; charset=UTF-8",
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    Accept: "application/json",
   },
 });
 
