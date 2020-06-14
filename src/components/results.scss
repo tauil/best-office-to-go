@@ -1,0 +1,17 @@
+.results {
+  display: flex;
+
+  .day {
+    border-right: 1px solid #ccc;
+
+    &:last-child {
+      border-right: 0;
+    }
+  }
+
+  .flights {
+    .flight-info {
+      
+    }
+  }
+}

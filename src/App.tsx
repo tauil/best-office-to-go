@@ -1,38 +1,46 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import useBestOffice from "./hooks/useBestOffice";
+import Results from "./components/results";
 
 import './App.css';
 
+interface MainState {
+  max_stops: number;
+}
+
+const initialState: MainState = {
+  max_stops: 0,
+};
+
 function App() {
   const [ request, { result, loading, error } ] = useBestOffice();
+  const [ preferences, setPreferences ] = useState(initialState);
 
   useEffect(
     function loadBestOffice() {
       if (!result && !loading && !error) {
-        request();
+        request(preferences.max_stops);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [ result, loading, error ]
+    [ preferences, result, loading, error ]
   );
 
-  if (!result || loading) {
-    return (
-      <p>Loading...</p>
-    );
+  function updatePreferences(stopsCount: number) {
+    setPreferences(prevState => ({
+      ...prevState,
+      max_stops: stopsCount,
+    }));
   }
 
   return (
     <div className="App">
-      {result.map((office: any) => (
-        <div key={office.location} className={office.bestOffice ? 'best-office' : undefined}>
-          <h2>{office.location}</h2>
-          <p>{office.weather.temperature.min} / {office.weather.temperature.max}</p>
-          <p>{office.weather.conditions}</p>
-          {office.bestOffice && <button onClick={() => alert("Book!")}>Book flight</button>}
-        </div>
-      ))}
+      <div>
+        <input type="number" onChange={event => updatePreferences(parseInt(event.target.value))} value={preferences.max_stops} />
+        <button onClick={() => request(preferences.max_stops)}>Update search</button>
+      </div>
+      <Results result={result} loading={loading} />
     </div>
   );
 }

@@ -28,7 +28,7 @@ export const getLocalAirport = (lat: number, long: number) =>
     }
   });
 
-export const getFlightsFrom = (fromAirportCode: string, toAirportCode: string, dateFrom: string, dateTo: string) =>
+export const getFlightsFrom = (fromAirportCode: string, toAirportCode: string, dateFrom: string, dateTo: string, stops: number) =>
   apiClient.get<any>(`/flights`, {
     params: {
       flyFrom: fromAirportCode,
@@ -37,7 +37,7 @@ export const getFlightsFrom = (fromAirportCode: string, toAirportCode: string, d
       dateTo: dateTo,
       partner: "picky",
       v: 3,
-      max_stopovers: 0,
+      max_stopovers: stops,
       sort: "price",
       flight_type: "oneway",
       limit: 10,

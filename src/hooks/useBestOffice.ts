@@ -1,110 +1,116 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useEffect } from "react";
+import { format, fromUnixTime } from 'date-fns'
 
 import useRequestOfficeWeather from "./useRequestOfficeWeather";
 import useRequestOfficeFlights from "./useRequestOfficeFlights";
+import { Flight } from "./useRequestOfficeFlights";
 
-// TODO: Define type properly
-type OfficeResult = any;
+export interface FinalResult {
+  location: string;
+  results: OfficeResults;
+  bestOffice: boolean;
+}
 
-interface BestOfficeState {
-  result: OfficeResult[] | null,
+export interface OfficeResults {
+  date: string;
+  day: string;
+  night: string;
+  temperature: {
+    minimum: number,
+    maximum: number,
+    unit: string,
+  };
+  flights: Flight[];
+};
+
+interface HookState {
+  result: FinalResult[] | null,
   loading: boolean,
   error: Error | null,
 }
 
-type BestOfficeReturn = [
-  () => void,
-  BestOfficeState
+type HookReturn = [
+  (max_stops: number) => void,
+  HookState
 ];
 
-const mockedResult = [
-  {
-    location: "Madrid",
-    weather: {
-      temperature: { min: 18, max: 23 },
-      conditions: "Clear",
-    },
-    bestOffice: true,
-  },
-  {
-    location: "Amsterdam",
-    weather: {
-      temperature: { min: 8, max: 18 },
-      conditions: "Cloudy",
-    },
-    bestOffice: false,
-  },
-  {
-    location: "Budapest",
-    weather: {
-      temperature: { min: 10, max: 15 },
-      conditions: "Rainy",
-    },
-    bestOffice: false,
-  },
-];
-
-const initialState: BestOfficeState = {
+const initialState: HookState = {
   result: null,
   loading: false,
   error: null,
 };
 
-function useBestOffice(): BestOfficeReturn {
+function useBestOffice(): HookReturn {
   const [ { result, loading, error }, setResult ] = useState(initialState);
 
   const [ requestForecast, { data: forecast, loading: loadingForecast, error: errorForecast } ] = useRequestOfficeWeather();
   const [ requestFlights, { data: flights, loading: loadingFlights, error: errorFlights } ] = useRequestOfficeFlights();
 
-  const forecastRequestCallback = useCallback(
-    function loadForecast() {
-      if (!forecast && !loadingForecast && !errorForecast) {
-        requestForecast();
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [forecast, loadingForecast, errorForecast]
-  );
+  async function loadForecast() {
+    if (!forecast && !loadingForecast && !errorForecast) {
+      await requestForecast();
+    }
+  }
 
-  const flightsRequestCallback = useCallback(
-    function loadFlights() {
-      if (!flights && !loadingFlights && !errorForecast) {
-        requestFlights();
-      }
-    },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [flights, loadingFlights, errorFlights]
-  );
+  async function loadFlights(max_stops: number) {
+    if (!flights && !loadingFlights && !errorForecast) {
+      await requestFlights(max_stops);
+    }
+  }
 
   useEffect(
     function processWeatherAndFlights() {
       if (forecast && flights) {
-        console.log({forecast, flights});
+        const finalResult = ["Amsterdam", "Budapest", "Madrid"].map((officeName: string) => {
+          const forecastByCity = forecast.filter((f: any) => f.location === officeName)[0].forecast.DailyForecasts;
+          const flightsByCity = flights.filter((flight: any) => flight.location === officeName)[0].flights;
+
+          const processedResults = forecastByCity.map((forecast: any) => {
+            const date = format(fromUnixTime(forecast.EpochDate), "dd/MM/yyyy");
+            const flightsByDate = flightsByCity.filter((flight: any) => flight.date === date);
+            const { Maximum, Minimum } = forecast.Temperature;
+
+            return {
+              date: date,
+              day: forecast.Day.IconPhrase,
+              night: forecast.Night.IconPhrase,
+              temperature: {
+                minimum: Minimum.Value,
+                maximum: Maximum.Value,
+                unit: Maximum.Unit,
+              },
+              flights: flightsByDate,
+            }
+          });
+
+          return {
+            location: officeName,
+            results: processedResults,
+            bestOffice: false, // TODO
+          }
+        });
+
+        setResult((prevState) => ({
+          ...prevState,
+          result: finalResult,
+          loading: false,
+        }));
       }
     },
     [forecast, flights]
   );
 
-  function request() {
+  async function request(max_stops: number) {
     try {
       setResult((prevState) => ({
         ...prevState,
         loading: true,
       }));
 
-      // 1. (DONE) Get weather from 3 cities
-      // 2. (DONE) Get lat long
-      // 3. (DONE) Get local airport
-      // 4. Get flights for good days
-      // 5. If 1 day with  more than 1 city with good weather, compare flight prices and show the best
-      forecastRequestCallback();
-      flightsRequestCallback();
+      console.log("Searching with", max_stops);
 
-      setResult((prevState) => ({
-        ...prevState,
-        result: mockedResult,
-        loading: false,
-      }));
+      await loadForecast();
+      await loadFlights(max_stops);
     } catch (error) {
       setResult((prevState) => ({
         ...prevState,
