@@ -1,4 +1,4 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 
 import useRequestOfficeWeather from "./useRequestOfficeWeather";
 import useRequestOfficeFlights from "./useRequestOfficeFlights";
@@ -76,7 +76,14 @@ function useBestOffice(): BestOfficeReturn {
     [flights, loadingFlights, errorFlights]
   );
 
-  console.log({ forecast, flights });
+  useEffect(
+    function processWeatherAndFlights() {
+      if (forecast && flights) {
+        console.log({forecast, flights});
+      }
+    },
+    [forecast, flights]
+  );
 
   function request() {
     try {
@@ -90,7 +97,6 @@ function useBestOffice(): BestOfficeReturn {
       // 3. (DONE) Get local airport
       // 4. Get flights for good days
       // 5. If 1 day with  more than 1 city with good weather, compare flight prices and show the best
-      console.log("Started");
       forecastRequestCallback();
       flightsRequestCallback();
 

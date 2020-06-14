@@ -38,6 +38,8 @@ export const getFlightsFrom = (fromAirportCode: string, toAirportCode: string, d
       partner: "picky",
       v: 3,
       max_stopovers: 0,
-      sort: "price"
+      sort: "price",
+      flight_type: "oneway",
+      limit: 10,
     }
   });

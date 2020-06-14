@@ -41,13 +41,22 @@ function useRequestOfficeWeather(): ApiRequestHookReturn {
       const responseMad: any | null = await getCityFiveDaysForecast(MADRID);
       const responseBud: any | null = await getCityFiveDaysForecast(BUDAPEST);
 
+      const rawData = [
+        { location: "Amsterdam", forecast: responseAms.data },
+        { location: "Madrid", forecast: responseMad.data },
+        { location: "Budapest", forecast: responseBud.data }
+      ];
+
+      // https://developer.accuweather.com/accuweather-forecast-api/apis/get/forecasts/v1/daily/5day/%7BlocationKey%7D
+      // The lower the number, the greater the severity
+      // So we sort Descending. The first is the best weather.
+      const sortedBySeverityData = rawData.sort((cityForecastDataA, cityForecastDataB) => {
+        return cityForecastDataB.forecast.Headline.Severity - cityForecastDataA.forecast.Headline.Severity;
+      });
+
       setReturn((prevState) => ({
         ...prevState,
-        data: {
-          amsterdam: responseAms.data,
-          madrid: responseMad.data,
-          budapest: responseBud.data,
-        },
+        data: sortedBySeverityData,
         loading: false,
       }));
     } catch (error) {
