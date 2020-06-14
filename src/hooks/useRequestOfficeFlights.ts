@@ -9,11 +9,7 @@ export interface Flight {
   id: string;
   date: string;
   price: number;
-  duration: {
-    departure: number;
-    return: number;
-    total: number;
-  };
+  duration: string;
   deepLink: string;
   availability: {
     seats: number;
@@ -26,26 +22,24 @@ type ApiRequest = (max_stops: number) => Promise<any>;
 interface ApiRequestHookState {
   loading: boolean;
   error: Error | null;
-  data: any | null,
+  data: any | null;
+  currentLocation: string | null;
 }
 
 type ApiRequestHookReturn = [
   ApiRequest,
-  {
-    loading: boolean;
-    error: Error | null;
-    data: any | null,
-  }
+  ApiRequestHookState,
 ];
 
 const initialState: ApiRequestHookState = {
   loading: false,
   error: null,
   data: null,
+  currentLocation: null,
 };
 
 function useRequestOfficeFlights(): ApiRequestHookReturn {
-  const [{ data, loading, error }, setReturn] = useState(initialState);
+  const [{ data, currentLocation, loading, error }, setReturn] = useState(initialState);
 
   async function requestLatLong(): Promise<{ latitude: number, longitude: number }> {
     return new Promise(resolve => {
@@ -84,14 +78,14 @@ function useRequestOfficeFlights(): ApiRequestHookReturn {
           id,
           dTime,
           price,
-          duration,
+          fly_duration,
           availability,
           deep_link,
         }: FlightResponse) => ({
           id,
           date: format(fromUnixTime(dTime), "dd/MM/yyyy"),
           price,
-          duration,
+          duration: fly_duration,
           availability,
           deepLink: deep_link,
         }));
@@ -118,6 +112,7 @@ function useRequestOfficeFlights(): ApiRequestHookReturn {
 
       setReturn((prevState) => ({
         ...prevState,
+        currentLocation: currentLocationAirport.city.name,
         data: flights,
         loading: false,
       }));
@@ -130,7 +125,7 @@ function useRequestOfficeFlights(): ApiRequestHookReturn {
     }
   }
 
-  return [request, { data, loading, error }];
+  return [request, { data, currentLocation, loading, error }];
 }
 
 export default useRequestOfficeFlights;

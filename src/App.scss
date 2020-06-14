@@ -1,0 +1,10 @@
+.preferences {
+  margin: 1em;
+  display: flex;
+  justify-content: center;
+
+  input[type="number"] {
+    width: 2em;
+    margin: 0 1em;
+  }
+}

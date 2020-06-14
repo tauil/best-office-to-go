@@ -1,18 +1,55 @@
 .results {
   display: flex;
 
+  &.loading {
+    height: 96vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .office-result {
+    width: 33%;
+    margin: 0 1em;
+    text-align: center;
+  }
+
+  .current-location {
+    opacity: .3;
+  }
+
   .day {
     border-right: 1px solid #ccc;
+    width: 20%;
+    padding: 0 1em;
 
     &:last-child {
       border-right: 0;
     }
+
+    .date {
+      font-size: .8em;
+      color: #999;
+    }
+
   }
 
   .flights {
     .flight-info {
+      border-bottom: 1px dotted #ccc;
+
       &:first-child {
         font-weight: bold;
+      }
+
+      &:last-child {
+        border-bottom: 0;
+      }
+
+      em {
+        color: #989898;
+        font-size: .8em;
+        display: block;
       }
     }
   }

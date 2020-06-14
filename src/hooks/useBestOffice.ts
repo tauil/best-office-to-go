@@ -7,8 +7,8 @@ import { Flight } from "./useRequestOfficeFlights";
 
 export interface FinalResult {
   location: string;
+  isCurrentLocation: boolean;
   results: OfficeResults;
-  bestOffice: boolean;
 }
 
 export interface OfficeResults {
@@ -44,7 +44,7 @@ function useBestOffice(): HookReturn {
   const [ { result, loading, error }, setResult ] = useState(initialState);
 
   const [ requestForecast, { data: forecast, loading: loadingForecast, error: errorForecast } ] = useRequestOfficeWeather();
-  const [ requestFlights, { data: flights, loading: loadingFlights, error: errorFlights } ] = useRequestOfficeFlights();
+  const [ requestFlights, { data: flights, currentLocation, loading: loadingFlights, error: errorFlights } ] = useRequestOfficeFlights();
 
   async function loadForecast() {
     if (!loadingForecast && !errorForecast) {
@@ -61,7 +61,7 @@ function useBestOffice(): HookReturn {
   useEffect(
     function processWeatherAndFlights() {
       if (forecast && flights) {
-        const finalResult = ["Amsterdam", "Budapest", "Madrid"].map((officeName: string) => {
+        const finalResult: FinalResult[] = ["Amsterdam", "Budapest", "Madrid"].map((officeName: string) => {
           const forecastByCity = forecast.filter((f: any) => f.location === officeName)[0].forecast.DailyForecasts;
           const flightsByCity = flights.filter((flight: any) => flight.location === officeName)[0].flights;
 
@@ -83,10 +83,12 @@ function useBestOffice(): HookReturn {
             }
           });
 
+          const isCurrentLocation = currentLocation ? (currentLocation.toLowerCase() === officeName.toLowerCase()) : false;
+
           return {
             location: officeName,
             results: processedResults,
-            bestOffice: false, // TODO
+            isCurrentLocation,
           }
         });
 

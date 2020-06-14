@@ -1,4 +1,5 @@
 import React from "react";
+import { parse, format } from 'date-fns'
 
 import { FinalResult, OfficeResults } from "../hooks/useBestOffice";
 import { Flight } from "../hooks/useRequestOfficeFlights";
@@ -19,10 +20,10 @@ function FlightsResults({ flights }: {flights: Flight[]}) {
     <div className="flights">
       {flights.map((flight: Flight) => (
         <div key={flight.id} className="flight-info">
-          <p>Price: ${flight.price}</p>
-          <p>Duration: {flight.duration.total}</p>
-          <p>Available seats: {flight.availability.seats}</p>
-          <p>{flight.deepLink && <button onClick={() => console.log(flight.deepLink)}>Book flight</button>}</p>
+          <p><em>Price:</em> ${flight.price}</p>
+          <p><em>Duration:</em> {flight.duration}</p>
+          <p><em>Available seats:</em> {flight.availability.seats}</p>
+          <p>{flight.deepLink && <a href={flight.deepLink} target="_new">Book flight</a>}</p>
         </div>
       ))}
     </div>
@@ -32,7 +33,7 @@ function FlightsResults({ flights }: {flights: Flight[]}) {
 function Results({ result, loading }: ResultsProps) {
   if (!result || loading) {
     return (
-      <section className="results">
+      <section className="results loading">
         Loading...
       </section>
     );
@@ -40,22 +41,26 @@ function Results({ result, loading }: ResultsProps) {
 
   return (
     <section className="results">
-      {result.map((office: any) => (
-        <div key={office.location} className={office.bestOffice ? 'best-office' : undefined}>
-          <h2>{office.location}</h2>
-          <section className="results">
-            {office.results.map((result: OfficeResults) => (
-              <div key={result.date} className="day">
-                <p>{result.date}</p>
-                <p>Day: {result.day}</p>
-                <p>Night: {result.night}</p>
-                <p>Temperature: {result.temperature.maximum}{result.temperature.unit} / {result.temperature.minimum}{result.temperature.unit}</p>
-                <FlightsResults flights={result.flights} />
-              </div>
-            ))}
-          </section>
-        </div>
-      ))}
+      {result.map((office: any) => {
+        const isCurrentLocationClassName = office.isCurrentLocation ? "current-location" : "";
+
+        return (
+          <div key={office.location} className={`office-result ${isCurrentLocationClassName}`}>
+            <h2>{office.location}</h2>
+            <section className="results">
+              {office.results.map((result: OfficeResults) => (
+                <div key={result.date} className="day">
+                  <p className="date">{result.date}</p>
+                  <p className="day-forecast">Day: {result.day}</p>
+                  <p className="night-forecast">Night: {result.night}</p>
+                  <p className="temp-forecast">{result.temperature.maximum}° / {result.temperature.minimum}°</p>
+                  {office.isCurrentLocation ? <p>Not showing flights for your current location</p> : <FlightsResults flights={result.flights} />}
+                </div>
+              ))}
+            </section>
+          </div>
+        )
+      })}
     </section>
   );
 }

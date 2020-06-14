@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react';
 import useBestOffice from "./hooks/useBestOffice";
 import Results from "./components/results";
 
-import './App.css';
+import './App.scss';
 
 interface MainState {
   max_stops: number;
@@ -36,7 +36,8 @@ function App() {
 
   return (
     <div className="App">
-      <div>
+      <div className="preferences">
+        <label>Number of stops:</label>
         <input type="number" onChange={event => updatePreferences(parseInt(event.target.value))} value={preferences.max_stops} />
         <button onClick={() => request(preferences.max_stops)}>Update search</button>
       </div>
