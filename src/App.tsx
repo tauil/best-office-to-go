@@ -42,7 +42,6 @@ function App() {
         <button onClick={() => request(preferences.max_stops)}>Update search</button>
       </div>
       <Results result={result} loading={loading} />
-      <p>0.0.1</p>
     </div>
   );
 }
