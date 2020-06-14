@@ -99,7 +99,7 @@ function useBestOffice(): HookReturn {
         }));
       }
     },
-    [forecast, flights]
+    [currentLocation, forecast, flights]
   );
 
   async function request(max_stops: number) {

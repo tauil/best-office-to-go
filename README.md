@@ -5,5 +5,7 @@
 
 * Layout
 * Write code for the error scenarios
+* Extract city name strings to constants and maybe change the code to make it easier to add other cities
+* Calculate the best price with best weather between all options in all cities
 * Write tests at least for the core funtionalities like the `useBestOffice`, `useRequestOfficeflights` and `useRequestofficeweather` hooks
-* Refactor code by extracting simialar functions to shared ones
+* Refactor code by extracting similar functions to shared ones
