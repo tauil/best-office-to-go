@@ -47,13 +47,13 @@ function useBestOffice(): HookReturn {
   const [ requestFlights, { data: flights, loading: loadingFlights, error: errorFlights } ] = useRequestOfficeFlights();
 
   async function loadForecast() {
-    if (!forecast && !loadingForecast && !errorForecast) {
+    if (!loadingForecast && !errorForecast) {
       await requestForecast();
     }
   }
 
   async function loadFlights(max_stops: number) {
-    if (!flights && !loadingFlights && !errorForecast) {
+    if (!loadingFlights && !errorForecast) {
       await requestFlights(max_stops);
     }
   }
@@ -106,8 +106,6 @@ function useBestOffice(): HookReturn {
         ...prevState,
         loading: true,
       }));
-
-      console.log("Searching with", max_stops);
 
       await loadForecast();
       await loadFlights(max_stops);

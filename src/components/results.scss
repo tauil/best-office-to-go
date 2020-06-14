@@ -11,7 +11,9 @@
 
   .flights {
     .flight-info {
-      
+      &:first-child {
+        font-weight: bold;
+      }
     }
   }
 }

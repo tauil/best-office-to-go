@@ -74,12 +74,9 @@ function useRequestOfficeFlights(): ApiRequestHookReturn {
       const endDateParameter = format(endDate, "dd/MM/yyyy");
 
       if (currentLocationCode !== code) {
-        console.log("Request for", code, max_stops);
         const flightsResponse = await getFlightsFrom(currentLocationCode, code, startDateParameter, endDateParameter, max_stops);
         onlyFlightsResponseData = flightsResponse.data.data;
       }
-
-      console.log(onlyFlightsResponseData);
 
       const flightsFound = onlyFlightsResponseData
         .filter((flight: any) => flight.availability.seats !== null)
@@ -116,8 +113,6 @@ function useRequestOfficeFlights(): ApiRequestHookReturn {
       // TODO: Manage error
       const { data: { locations } } = currentLocationAirports;
       const currentLocationAirport = locations[0];
-
-      console.log("Request flights", max_stops);
 
       const flights = await Promise.all(findFlights(currentLocationAirport.code, max_stops))
 
