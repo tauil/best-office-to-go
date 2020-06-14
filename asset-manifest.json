@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/best-office-to-go/static/css/main.3ade7153.chunk.css",
-    "main.js": "/best-office-to-go/static/js/main.420a8125.chunk.js",
-    "main.js.map": "/best-office-to-go/static/js/main.420a8125.chunk.js.map",
+    "main.js": "/best-office-to-go/static/js/main.b71dea4a.chunk.js",
+    "main.js.map": "/best-office-to-go/static/js/main.b71dea4a.chunk.js.map",
     "runtime-main.js": "/best-office-to-go/static/js/runtime-main.75c5915a.js",
     "runtime-main.js.map": "/best-office-to-go/static/js/runtime-main.75c5915a.js.map",
     "static/js/2.bc01f6bc.chunk.js": "/best-office-to-go/static/js/2.bc01f6bc.chunk.js",
     "static/js/2.bc01f6bc.chunk.js.map": "/best-office-to-go/static/js/2.bc01f6bc.chunk.js.map",
     "index.html": "/best-office-to-go/index.html",
-    "precache-manifest.363aa4756db77bbc1caae4417d192b69.js": "/best-office-to-go/precache-manifest.363aa4756db77bbc1caae4417d192b69.js",
+    "precache-manifest.54898c88bf4d206018aa02ffc1e6b500.js": "/best-office-to-go/precache-manifest.54898c88bf4d206018aa02ffc1e6b500.js",
     "service-worker.js": "/best-office-to-go/service-worker.js",
     "static/css/main.3ade7153.chunk.css.map": "/best-office-to-go/static/css/main.3ade7153.chunk.css.map",
     "static/js/2.bc01f6bc.chunk.js.LICENSE.txt": "/best-office-to-go/static/js/2.bc01f6bc.chunk.js.LICENSE.txt"
@@ -17,6 +17,6 @@
     "static/js/runtime-main.75c5915a.js",
     "static/js/2.bc01f6bc.chunk.js",
     "static/css/main.3ade7153.chunk.css",
-    "static/js/main.420a8125.chunk.js"
+    "static/js/main.b71dea4a.chunk.js"
   ]
 }
