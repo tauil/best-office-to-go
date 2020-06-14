@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/best-office-to-go/precache-manifest.afbb6bf2987b459569a878ce28e8579b.js"
+  "/best-office-to-go/precache-manifest.648953346ee1313fcb42da57d7417b0f.js"
 );
 
 self.addEventListener('message', (event) => {
