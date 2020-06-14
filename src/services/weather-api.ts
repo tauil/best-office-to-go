@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_URL = "http://dataservice.accuweather.com";
+const API_URL = "https://dataservice.accuweather.com";
 const DEFAULT_PARAMS = {
   params: {
     apikey: process.env.REACT_APP_WEATHER_API_KEY,
