@@ -22,7 +22,6 @@ type ApiRequest = (max_stops: number) => Promise<any>;
 
 interface ApiRequestHookState {
   loading: boolean;
-  error: Error | null;
   data: any | null;
   currentLocation: string | null;
 }
@@ -34,13 +33,12 @@ type ApiRequestHookReturn = [
 
 const initialState: ApiRequestHookState = {
   loading: false,
-  error: null,
   data: null,
   currentLocation: null,
 };
 
 function useRequestOfficeFlights(): ApiRequestHookReturn {
-  const [{ data, currentLocation, loading, error }, setReturn] = useState(initialState);
+  const [{ data, currentLocation, loading }, setReturn] = useState(initialState);
 
   async function requestLatLong(): Promise<{ latitude: number, longitude: number }> {
     return new Promise(resolve => {
@@ -97,37 +95,29 @@ function useRequestOfficeFlights(): ApiRequestHookReturn {
   }
 
   async function request(max_stops: number) {
-    try {
-      setReturn((prevState) => ({
-        ...prevState,
-        loading: true,
-      }));
+    setReturn((prevState) => ({
+      ...prevState,
+      loading: true,
+    }));
 
-      const coords = await requestLatLong();
-      const currentLocationAirports: any = await getLocalAirport(coords.latitude, coords.longitude);
+    const coords = await requestLatLong();
+    const currentLocationAirports: any = await getLocalAirport(coords.latitude, coords.longitude);
 
-      // TODO: Manage error
-      const { data: { locations } } = currentLocationAirports;
-      const currentLocationAirport = locations[0];
+    // TODO: Manage error
+    const { data: { locations } } = currentLocationAirports;
+    const currentLocationAirport = locations[0];
 
-      const flights = await Promise.all(findFlights(currentLocationAirport.code, max_stops))
+    const flights = await Promise.all(findFlights(currentLocationAirport.code, max_stops))
 
-      setReturn((prevState) => ({
-        ...prevState,
-        currentLocation: currentLocationAirport.city.name,
-        data: flights,
-        loading: false,
-      }));
-    } catch (error) {
-      setReturn((prevState) => ({
-        ...prevState,
-        error: error,
-        loading: false,
-      }));
-    }
+    setReturn((prevState) => ({
+      ...prevState,
+      currentLocation: currentLocationAirport.city.name,
+      data: flights,
+      loading: false,
+    }));
   }
 
-  return [request, { data, currentLocation, loading, error }];
+  return [request, { data, currentLocation, loading }];
 }
 
 export default useRequestOfficeFlights;

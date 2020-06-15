@@ -49,17 +49,17 @@ const initialState: HookState = {
 function useBestOffice(): HookReturn {
   const [ { result, loading, error }, setResult ] = useState(initialState);
 
-  const [ requestForecast, { data: forecast, loading: loadingForecast, error: errorForecast } ] = useRequestOfficeWeather();
-  const [ requestFlights, { data: flights, currentLocation, loading: loadingFlights, error: errorFlights } ] = useRequestOfficeFlights();
+  const [ requestForecast, { data: forecast, loading: loadingForecast } ] = useRequestOfficeWeather();
+  const [ requestFlights, { data: flights, currentLocation, loading: loadingFlights } ] = useRequestOfficeFlights();
 
   async function loadForecast() {
-    if (!loadingForecast && !errorForecast) {
+    if (!loadingForecast) {
       await requestForecast();
     }
   }
 
   async function loadFlights(max_stops: number) {
-    if (!loadingFlights && !errorFlights) {
+    if (!loadingFlights) {
       await requestFlights(max_stops);
     }
   }
@@ -132,7 +132,7 @@ function useBestOffice(): HookReturn {
     }
   }
 
-  return [request, { result, loading: (loading || loadingFlights || loadingForecast), error: (error || errorForecast || errorFlights) }];
+  return [request, { result, loading: (loading || loadingFlights || loadingForecast), error }];
 }
 
 export default useBestOffice;
