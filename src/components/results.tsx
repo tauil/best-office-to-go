@@ -31,7 +31,7 @@ function FlightsResults({ flights }: {flights: Flight[]}) {
 
 function WeatherIcon({ id, title }: { id: string, title: string }) {
   return (
-    <img className="weather-icon" title={title} src={`https://www.accuweather.com/images/weathericons/${id}.svg`} />
+    <img className="weather-icon" title={title} alt={title} src={`https://www.accuweather.com/images/weathericons/${id}.svg`} />
   );
 }
 
