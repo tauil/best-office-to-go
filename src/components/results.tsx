@@ -6,7 +6,6 @@ import { Flight } from "../hooks/useRequestOfficeFlights";
 import "./results.scss";
 
 interface ResultsProps {
-  loading: boolean;
   result: FinalResult[] | null;
 };
 
@@ -38,18 +37,10 @@ function WeatherIcon({ id, title, day }: { id: string, title: string, day: boole
   );
 }
 
-function Results({ result, loading }: ResultsProps) {
-  if (!result || loading) {
-    return (
-      <section className="results loading">
-        Loading...
-      </section>
-    );
-  }
-
+function Results({ result }: ResultsProps) {
   return (
     <section className="results">
-      {result.map((office: any) => {
+      {result && result.map((office: any) => {
         const isCurrentLocationClassName = office.isCurrentLocation ? "current-location" : "";
 
         return (

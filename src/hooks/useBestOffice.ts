@@ -132,7 +132,7 @@ function useBestOffice(): HookReturn {
     }
   }
 
-  return [request, { result, loading: (loading || loadingFlights || loadingForecast), error }];
+  return [request, { result, loading: (loading || loadingFlights || loadingForecast), error: (error || errorForecast || errorFlights) }];
 }
 
 export default useBestOffice;

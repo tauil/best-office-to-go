@@ -41,7 +41,9 @@ function App() {
         <input type="number" onChange={event => updatePreferences(parseInt(event.target.value))} value={preferences.max_stops} />
         <button onClick={() => request(preferences.max_stops)}>Update search</button>
       </div>
-      <Results result={result} loading={loading} />
+      {error && <section className="results main-msg">{error.message}</section>}
+      {!error && loading && <section className="results main-msg">Loading...</section>}
+      <Results result={result} />
     </div>
   );
 }

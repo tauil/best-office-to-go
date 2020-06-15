@@ -1,13 +1,6 @@
 .results {
   display: flex;
 
-  &.loading {
-    height: 96vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
   h2 {
     margin: .5em 0 1em;
   }
