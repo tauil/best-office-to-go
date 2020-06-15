@@ -70,45 +70,50 @@ function useBestOffice(): HookReturn {
     }
   }
 
+  // Saving time here. I should create types for this
+  function processResult(forecastByCity: any, flightsByCity: any): OfficeResults {
+    return forecastByCity.map((forecast: any) => {
+      const date = format(fromUnixTime(forecast.EpochDate), "dd/MM/yyyy");
+      const flightsByDate = flightsByCity.filter((flight: any) => flight.date === date);
+      const { Maximum, Minimum } = forecast.Temperature;
+
+      return {
+        date: date,
+        day: {
+          text: forecast.Day.IconPhrase,
+          icon: forecast.Day.Icon,
+        },
+        night: {
+          text: forecast.Night.IconPhrase,
+          icon: forecast.Night.Icon,
+        },
+        temperature: {
+          minimum: Minimum.Value,
+          maximum: Maximum.Value,
+          unit: Maximum.Unit,
+        },
+        flights: flightsByDate,
+      }
+    });
+  }
+
+  function mapResultByOffice(officeName: string) {
+    const forecastByCity = forecast.filter((f: any) => f.location === officeName)[0].forecast.DailyForecasts;
+    const flightsByCity = flights.filter((flight: any) => flight.location === officeName)[0].flights;
+    const processedResults = processResult(forecastByCity, flightsByCity);
+    const isCurrentLocation = currentLocation ? (currentLocation.toLowerCase() === officeName.toLowerCase()) : false;
+
+    return {
+      location: officeName,
+      results: processedResults,
+      isCurrentLocation,
+    }
+  }
+
   useEffect(
     function processWeatherAndFlights() {
       if (forecast && flights) {
-        const finalResult: FinalResult[] = ["Amsterdam", "Budapest", "Madrid"].map((officeName: string) => {
-          const forecastByCity = forecast.filter((f: any) => f.location === officeName)[0].forecast.DailyForecasts;
-          const flightsByCity = flights.filter((flight: any) => flight.location === officeName)[0].flights;
-
-          const processedResults = forecastByCity.map((forecast: any) => {
-            const date = format(fromUnixTime(forecast.EpochDate), "dd/MM/yyyy");
-            const flightsByDate = flightsByCity.filter((flight: any) => flight.date === date);
-            const { Maximum, Minimum } = forecast.Temperature;
-
-            return {
-              date: date,
-              day: {
-                text: forecast.Day.IconPhrase,
-                icon: forecast.Day.Icon,
-              },
-              night: {
-                text: forecast.Night.IconPhrase,
-                icon: forecast.Night.Icon,
-              },
-              temperature: {
-                minimum: Minimum.Value,
-                maximum: Maximum.Value,
-                unit: Maximum.Unit,
-              },
-              flights: flightsByDate,
-            }
-          });
-
-          const isCurrentLocation = currentLocation ? (currentLocation.toLowerCase() === officeName.toLowerCase()) : false;
-
-          return {
-            location: officeName,
-            results: processedResults,
-            isCurrentLocation,
-          }
-        });
+        const finalResult: FinalResult[] = ["Amsterdam", "Budapest", "Madrid"].map((officeName: string) => mapResultByOffice(officeName));
 
         setResult((prevState) => ({
           ...prevState,
