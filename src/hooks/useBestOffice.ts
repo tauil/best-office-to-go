@@ -115,7 +115,7 @@ function useBestOffice(): HookReturn {
         isCurrentLocation,
       }
     },
-    [forecast, flights, processResultByOfficeCallback, currentLocation]
+    [processResultByOfficeCallback, currentLocation]
   );
 
   useEffect(
