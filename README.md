@@ -11,3 +11,4 @@ The idea of this project is to choose between Amsterdam, Budapest and Madrid. We
 * Calculate the best price with best weather between all options in all cities
 * Extract city name strings to constants and maybe change the code to make it easier to add other cities
 * Write tests at least for the core funtionalities like the `useBestOffice`, `useRequestOfficeflights` and `useRequestofficeweather` hooks
+* Write a error state if the user denies the localization permission
