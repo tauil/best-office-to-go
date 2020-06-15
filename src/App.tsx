@@ -14,7 +14,7 @@ const initialState: MainState = {
 };
 
 function App() {
-  const [ request, { result, loading, error } ] = useBestOffice();
+  const [ request, { result, loading, loadingForecast, loadingFlights, error } ] = useBestOffice();
   const [ preferences, setPreferences ] = useState(initialState);
 
   useEffect(
@@ -42,7 +42,13 @@ function App() {
         <button onClick={() => request(preferences.max_stops)}>Update search</button>
       </div>
       {error && <section className="results main-msg">{error.message}</section>}
-      {!error && loading && <section className="results main-msg">Loading...</section>}
+      {!error && (loading || loadingForecast || loadingFlights) && (
+        <section className="results main-msg">
+          {loading && !loadingFlights && !loadingForecast && <span>Loading...</span>}
+          {loadingForecast && <span>Looking up for the weather...</span>}
+          {loadingFlights && <span>Finding cheap flight tickets...</span>}
+        </section>
+      )}
       <Results result={result} />
     </div>
   );

@@ -37,7 +37,13 @@ interface HookState {
 
 type HookReturn = [
   (max_stops: number) => void,
-  HookState
+  {
+    result: FinalResult[] | null,
+    loading: boolean,
+    loadingForecast: boolean,
+    loadingFlights: boolean,
+    error: Error | null,
+  }
 ];
 
 const initialState: HookState = {
@@ -132,7 +138,7 @@ function useBestOffice(): HookReturn {
     }
   }
 
-  return [request, { result, loading: (loading || loadingFlights || loadingForecast), error }];
+  return [request, { result, loading, loadingFlights, loadingForecast, error }];
 }
 
 export default useBestOffice;
