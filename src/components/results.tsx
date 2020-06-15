@@ -22,6 +22,7 @@ function FlightsResults({ flights }: {flights: Flight[]}) {
           <div className="flight-info-detail"><em>Price:</em> ${flight.price}</div>
           <div className="flight-info-detail"><em>Duration:</em> {flight.duration}</div>
           <div className="flight-info-detail"><em>Available seats:</em> {flight.availability.seats}</div>
+          <div className="flight-info-detail"><em>Stops:</em> {flight.stops}</div>
           <div className="flight-info-detail">{flight.deepLink && <a className="book-flight-link" href={flight.deepLink} target="_new">Book flight</a>}</div>
         </div>
       ))}
@@ -29,9 +30,11 @@ function FlightsResults({ flights }: {flights: Flight[]}) {
   );
 }
 
-function WeatherIcon({ id, title }: { id: string, title: string }) {
+function WeatherIcon({ id, title, day }: { id: string, title: string, day: boolean }) {
+  const finalTitle = `${title} during the ${day ? 'day' : 'night'}.`;
+
   return (
-    <img className="weather-icon" title={title} alt={title} src={`https://www.accuweather.com/images/weathericons/${id}.svg`} />
+    <img className="weather-icon" title={finalTitle} alt={finalTitle} src={`https://www.accuweather.com/images/weathericons/${id}.svg`} />
   );
 }
 
@@ -57,8 +60,8 @@ function Results({ result, loading }: ResultsProps) {
               {office.results.map((result: OfficeResults) => (
                 <div key={result.date} className="day">
                   <div className="date">{result.date}</div>
-                  <div className="day-forecast"><WeatherIcon id={result.day.icon} title={result.day.text} /></div>
-                  <div className="night-forecast"><WeatherIcon id={result.night.icon} title={result.night.text} /></div>
+                  <div className="day-forecast"><WeatherIcon id={result.day.icon} title={result.day.text} day={true} /></div>
+                  <div className="night-forecast"><WeatherIcon id={result.night.icon} title={result.night.text} day={false} /></div>
                   <div className="temp-forecast">
                     <div>{result.temperature.maximum}°</div>
                     <div>{result.temperature.minimum}°</div>

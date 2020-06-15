@@ -14,6 +14,7 @@ export interface Flight {
   availability: {
     seats: number;
   };
+  stops: number;
 };
 
 // The Promise and AxiosResponse content should be specific the endpoint. Skipping just to sabe time for now
@@ -80,13 +81,15 @@ function useRequestOfficeFlights(): ApiRequestHookReturn {
           fly_duration,
           availability,
           deep_link,
-        }: FlightResponse) => ({
+          route,
+        }: FlightResponse): Flight => ({
           id,
           date: format(fromUnixTime(dTime), "dd/MM/yyyy"),
           price,
           duration: fly_duration,
           availability,
           deepLink: deep_link,
+          stops: route.length > 2 ? route.length - 2 : 0, // if the route steps are more than 2 (origin and destination), then it has stops
         }));
 
       return { location: city, flights: flightsFound };
