@@ -20,9 +20,14 @@ export interface Flight {
 // The Promise and AxiosResponse content should be specific the endpoint. Skipping just to sabe time for now
 type ApiRequest = (max_stops: number) => Promise<any>;
 
+export interface FlightsByCity {
+  location: string;
+  flights: Flight[];
+};
+
 interface ApiRequestHookState {
   loading: boolean;
-  data: any | null;
+  data: FlightsByCity[] | null;
   currentLocation: string | null;
 }
 
@@ -49,7 +54,7 @@ function useRequestOfficeFlights(): ApiRequestHookReturn {
     });
   }
 
-  function findFlights(currentLocationCode: string, max_stops: number) {
+  function findFlights(currentLocationCode: string, max_stops: number): Promise<FlightsByCity>[] {
     const citiesToBeSearched = [
       { city: "Amsterdam", code: "AMS" },
       { city: "Madrid", code: "MAD" },
@@ -87,7 +92,7 @@ function useRequestOfficeFlights(): ApiRequestHookReturn {
           duration: fly_duration,
           availability,
           deepLink: deep_link,
-          stops: route.length > 2 ? route.length - 2 : 0, // if the route steps are more than 2 (origin and destination), then it has stops
+          stops: route.length - 1,
         }));
 
       return { location: city, flights: flightsFound };
