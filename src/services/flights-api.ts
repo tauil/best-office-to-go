@@ -1,16 +1,10 @@
 import axios from "axios";
 
+import { axiosSetup } from "./api";
+
 const API_URL = "https://api.skypicker.com/";
 
-const apiClient = axios.create({
-  baseURL: API_URL,
-  headers: {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    "Content-type": "application/json; charset=UTF-8",
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    Accept: "application/json",
-  },
-});
+const apiClient = axios.create(axiosSetup(API_URL));
 
 // Default to Amsterdam lat / long
 export const getLocalAirport = (lat: number, long: number) =>

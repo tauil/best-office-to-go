@@ -19,13 +19,19 @@ function FlightsResults({ flights }: {flights: Flight[]}) {
     <div className="flights">
       {flights.map((flight: Flight) => (
         <div key={flight.id} className="flight-info">
-          <p><em>Price:</em> ${flight.price}</p>
-          <p><em>Duration:</em> {flight.duration}</p>
-          <p><em>Available seats:</em> {flight.availability.seats}</p>
-          <p>{flight.deepLink && <a href={flight.deepLink} target="_new">Book flight</a>}</p>
+          <div className="flight-info-detail"><em>Price:</em> ${flight.price}</div>
+          <div className="flight-info-detail"><em>Duration:</em> {flight.duration}</div>
+          <div className="flight-info-detail"><em>Available seats:</em> {flight.availability.seats}</div>
+          <div className="flight-info-detail">{flight.deepLink && <a className="book-flight-link" href={flight.deepLink} target="_new">Book flight</a>}</div>
         </div>
       ))}
     </div>
+  );
+}
+
+function WeatherIcon({ id, title }: { id: string, title: string }) {
+  return (
+    <img className="weather-icon" title={title} src={`https://www.accuweather.com/images/weathericons/${id}.svg`} />
   );
 }
 
@@ -46,17 +52,23 @@ function Results({ result, loading }: ResultsProps) {
         return (
           <div key={office.location} className={`office-result ${isCurrentLocationClassName}`}>
             <h2>{office.location}</h2>
-            <section className="results">
+
+            <section className="office-results">
               {office.results.map((result: OfficeResults) => (
                 <div key={result.date} className="day">
-                  <p className="date">{result.date}</p>
-                  <p className="day-forecast">Day: {result.day}</p>
-                  <p className="night-forecast">Night: {result.night}</p>
-                  <p className="temp-forecast">{result.temperature.maximum}° / {result.temperature.minimum}°</p>
-                  {office.isCurrentLocation ? <p>Not showing flights for your current location</p> : <FlightsResults flights={result.flights} />}
+                  <div className="date">{result.date}</div>
+                  <div className="day-forecast"><WeatherIcon id={result.day.icon} title={result.day.text} /></div>
+                  <div className="night-forecast"><WeatherIcon id={result.night.icon} title={result.night.text} /></div>
+                  <div className="temp-forecast">
+                    <div>{result.temperature.maximum}°</div>
+                    <div>{result.temperature.minimum}°</div>
+                  </div>
+                  {!office.isCurrentLocation && <FlightsResults flights={result.flights} />}
                 </div>
               ))}
             </section>
+
+            {office.isCurrentLocation && <p className="disclaimer">Not showing flights for your current location</p>}
           </div>
         )
       })}

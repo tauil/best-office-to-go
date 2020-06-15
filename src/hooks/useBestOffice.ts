@@ -13,8 +13,14 @@ export interface FinalResult {
 
 export interface OfficeResults {
   date: string;
-  day: string;
-  night: string;
+  day: {
+    text: string;
+    icon: string;
+  };
+  night: {
+    text: string;
+    icon: string;
+  };
   temperature: {
     minimum: number,
     maximum: number,
@@ -72,8 +78,14 @@ function useBestOffice(): HookReturn {
 
             return {
               date: date,
-              day: forecast.Day.IconPhrase,
-              night: forecast.Night.IconPhrase,
+              day: {
+                text: forecast.Day.IconPhrase,
+                icon: forecast.Day.Icon,
+              },
+              night: {
+                text: forecast.Night.IconPhrase,
+                icon: forecast.Night.Icon,
+              },
               temperature: {
                 minimum: Minimum.Value,
                 maximum: Maximum.Value,

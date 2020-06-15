@@ -61,7 +61,6 @@ function useRequestOfficeFlights(): ApiRequestHookReturn {
     return citiesToBeSearched.map(async ({ city, code }) => {
       let onlyFlightsResponseData = [];
 
-      // TODO
       const startDate = new Date();
       const startDateParameter = format(startDate, "dd/MM/yyyy");
       const endDate = add(startDate, { days: 4 });
@@ -102,7 +101,7 @@ function useRequestOfficeFlights(): ApiRequestHookReturn {
       }));
 
       const coords = await requestLatLong();
-      const currentLocationAirports: any | null = await getLocalAirport(coords.latitude, coords.longitude);
+      const currentLocationAirports: any = await getLocalAirport(coords.latitude, coords.longitude);
 
       // TODO: Manage error
       const { data: { locations } } = currentLocationAirports;

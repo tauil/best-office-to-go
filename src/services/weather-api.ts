@@ -1,5 +1,7 @@
 import axios from "axios";
 
+import { axiosSetup } from "./api";
+
 const API_URL = "https://dataservice.accuweather.com";
 const DEFAULT_PARAMS = {
   params: {
@@ -8,13 +10,7 @@ const DEFAULT_PARAMS = {
   }
 };
 
-const apiClient = axios.create({
-  baseURL: API_URL,
-  headers: {
-    // eslint-disable-next-line @typescript-eslint/naming-convention
-    "Content-type": "application/json; charset=UTF-8",
-  },
-});
+const apiClient = axios.create(axiosSetup(API_URL));
 
 export const getCityFiveDaysForecast = (cityId: number) =>
   apiClient.get<any>(`/forecasts/v1/daily/5day/${cityId}`, DEFAULT_PARAMS);
